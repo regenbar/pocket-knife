@@ -7,7 +7,7 @@ import java.util.List;
 
 public class FileFinder {
     private String searchPath = "";
-    private boolean searchRecursive = true;
+    private boolean isSearchRecursive = true;
 
     private List<String> withFileNames = new ArrayList<>();
     private List<String> withFileNameContains = new ArrayList<>();
@@ -122,7 +122,7 @@ public class FileFinder {
 
         for (File file : listFiles) {
             if (file.isDirectory()) {
-                if (searchRecursive) {
+                if (isSearchRecursive) {
                     allFiles.addAll(findAll(file.listFiles()));
                 }
             } else {
@@ -166,7 +166,7 @@ public class FileFinder {
     }
 
     public FileFinder isRecursive (boolean searchRecursive) {
-        this.searchRecursive = searchRecursive;
+        this.isSearchRecursive = searchRecursive;
         return this;
     }
 }
