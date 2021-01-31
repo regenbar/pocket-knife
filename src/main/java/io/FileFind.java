@@ -1,12 +1,13 @@
 package io;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class FileFinder {
-    private String searchPath = "";
+public class FileFind {
+    private String searchPath = ".";
     private boolean isSearchRecursive = true;
 
     private List<String> withFileNames = new ArrayList<>();
@@ -23,10 +24,13 @@ public class FileFinder {
      * Find all files based on the provided selection of conditions
      * @return All selected files
      */
-    public List<File> findAll () {
+    public List<File> findAll () throws FileNotFoundException {
         List<File> allFiles = new ArrayList<>();
 
         File file = new File(searchPath);
+        if (!file.exists()) {
+            throw new FileNotFoundException(file.getAbsolutePath());
+        }
         if (file.isDirectory()) {
             if (ifAddFolder(file)) {
                 allFiles.addAll(findAll(file.listFiles()));
@@ -135,37 +139,37 @@ public class FileFinder {
         return allFiles;
     }
 
-    public FileFinder withFileName (String fileName) {
+    public FileFind withFileName (String fileName) {
         withFileNames.add(fileName);
         return this;
     }
 
-    public FileFinder withPath(String startPath) {
+    public FileFind withPath(String startPath) {
         this.searchPath = startPath;
         return this;
     }
 
-    public FileFinder withFileNameContains(String fileNameFragment) {
+    public FileFind withFileNameContains(String fileNameFragment) {
         withFileNameContains.add(fileNameFragment);
         return this;
     }
 
-    public FileFinder withoutFileNameContains(String fileNameFragment) {
+    public FileFind withoutFileNameContains(String fileNameFragment) {
         withoutFileNameContains.add(fileNameFragment);
         return this;
     }
 
-    public FileFinder withFilePathContains(String filePathFragment) {
+    public FileFind withFilePathContains(String filePathFragment) {
         withFilePathContains.add(filePathFragment);
         return this;
     }
 
-    public FileFinder withoutFilePathContains(String filePathFragment) {
+    public FileFind withoutFilePathContains(String filePathFragment) {
         withoutFilePathContains.add(filePathFragment);
         return this;
     }
 
-    public FileFinder isRecursive (boolean searchRecursive) {
+    public FileFind isRecursive (boolean searchRecursive) {
         this.isSearchRecursive = searchRecursive;
         return this;
     }
