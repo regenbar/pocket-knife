@@ -1,5 +1,7 @@
 package io;
 
+import model.Folder;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -42,6 +44,26 @@ public class FileFind {
         }
 
         return allFiles;
+    }
+
+    /**
+     * Find all files based on the provided selection of conditions
+     * @return All selected files
+     */
+    public Folder findAndGroupAll () throws FileNotFoundException {
+        File file = new File(searchPath);
+        if (!file.exists()) {
+            throw new FileNotFoundException(file.getAbsolutePath());
+        } else if (file.isFile()) {
+            throw new RuntimeException("You have to specify folder and not a file");
+        }
+
+        Folder folder = new Folder(file);
+        if (ifAddFolder(file)) {
+            findAndGroupAll(folder, file.listFiles());
+        }
+
+        return folder;
     }
 
     private boolean ifAddFolder(File startFile) {
@@ -137,6 +159,24 @@ public class FileFind {
         }
 
         return allFiles;
+    }
+
+    private Folder findAndGroupAll(Folder folder, File[] listFiles) {
+        for (File file : listFiles) {
+            if (file.isDirectory()) {
+                if (isSearchRecursive) {
+                    Folder innerFolder = new Folder(file);
+                    innerFolder = findAndGroupAll(innerFolder, file.listFiles());
+                    folder.addFolder(innerFolder);
+                }
+            } else if (file.isFile()){
+                if (ifAddFile(file)) {
+                    folder.addFile(file);
+                }
+            }
+        }
+
+        return folder;
     }
 
     public FileFind withFileName (String fileName) {

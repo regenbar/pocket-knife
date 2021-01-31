@@ -1,5 +1,7 @@
 package string;
 
+import tester.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
