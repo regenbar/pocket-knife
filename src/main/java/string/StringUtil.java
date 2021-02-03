@@ -1,11 +1,13 @@
 package string;
 
-import tester.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class StringUtil {
+
+    public static String capitalize (String str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
 
     /**
      * Split string based on delimiters.

@@ -3,68 +3,64 @@ package resource;
 import com.squareup.javapoet.*;
 import io.FileFind;
 import model.Folder;
-import tester.R;
+import string.StringUtil;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Paths;
+import java.sql.Struct;
 import java.util.List;
 import javax.lang.model.element.Modifier;
 
 public class ResourceIndexer {
 
+    private boolean filePathIsRelative = true;
+    private boolean filePathIsAbsolute = false;
+    private String searchPath;
+    private String className;
+    private String classPackage;
+    private String sourceFolderPath = "src/main/java";
 
-    public static void main(String[] args) throws IOException {
+    public ResourceIndexer withClassPackage (String classPackage) {
+        this.classPackage = classPackage;
+        return this;
+    }
 
+    public ResourceIndexer withSourceFolderPath (String sourceFolderPath) {
+        this.sourceFolderPath = sourceFolderPath;
+        return this;
+    }
 
-        String searchPath = "src/main/resources/";
-        build(R.class, searchPath);
+    public ResourceIndexer withClassName (String className) {
+        this.className = className;
+        return this;
+    }
 
+    public ResourceIndexer withSearchPath (String searchPath) {
+        this.searchPath = searchPath;
+        return this;
+    }
 
-//        TypeSpec.Builder root = TypeSpec.classBuilder("R")
-//                .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
-//
-//        Map<String, Object> allStructure = new LinkedHashMap<>();
+    public ResourceIndexer withFilePathIsRelative () {
+        this.filePathIsRelative = true;
+        this.filePathIsAbsolute = false;
+        return this;
+    }
 
-//        for (File file : all) {
-//            String fileName = file.getName();
-//            String fileNameNoExt = fileName.substring(0, fileName.lastIndexOf("."));
-//            String filePath = file.toString().substring(searchPath.length());
-//
-//
-//            FieldSpec name = FieldSpec.builder(String.class, fileNameNoExt)
-//                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-//                    .initializer("$S", filePath)
-//                    .build();
-//
-//            root.addField(name);
-//
-//            List<String> split = StringUtil.split(filePath, false, "/", "\\");
-//
-//            Map<String, Object> structure = new LinkedHashMap<>();
-//            for (int i = 0; i < split.size()-1; i++) {
-//                Map<String, Object> s = new LinkedHashMap<>();
-//
-//                if (structure.containsKey(fileNameNoExt)) {
-//                    Map<String, Object> map = (Map) structure.get(fileName);
-//                    map.put(fileNameNoExt, s);
-//                    structure = map;
-//                } else {
-//                    structure.put(fileNameNoExt, s);
-//                    structure = s;
-//                }
-//
-//
-//            }
-//            structure.put(fileNameNoExt, fileName);
-//
-//            allStructure.putAll(structure);;
-//            System.out.println(split);
-            // System.out.println(file);
-        }
+    public ResourceIndexer withFilePathIsAbsolute () {
+        this.filePathIsRelative = false;
+        this.filePathIsAbsolute = true;
+        return this;
+    }
 
-    private static void build(Class<R> klass, String searchPath) throws IOException {
+    public void build () throws IOException {
         Folder folder = new FileFind().withPath(searchPath).findAndGroupAll();
-        TypeSpec.Builder root = TypeSpec.classBuilder(klass.getSimpleName())
+        build(folder);
+    }
+
+    public void build(Folder folder) throws IOException {
+        TypeSpec.Builder root = TypeSpec.classBuilder(className)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
 
         for (Folder folderFolder : folder.getFolders()) {
@@ -73,26 +69,30 @@ public class ResourceIndexer {
 
         addInnerField(root, folder.getFiles());
 
-        String packagePath = klass.getPackage().toString().replace("package", "").trim();
-        JavaFile javaFile = JavaFile.builder(packagePath, root.build()).build();
+        JavaFile javaFile = JavaFile.builder(classPackage, root.build()).build();
         javaFile.writeTo(System.out);
-
-        javaFile.writeToFile(new File("R.java"));
-        //javaFile.writeTo(System.out);
+        javaFile.writeToFile(new File(sourceFolderPath));
     }
 
-    private static void addInnerField(TypeSpec.Builder root, List<File> files) {
+    private void addInnerField(TypeSpec.Builder root, List<File> files) {
         for (File file : files) {
-            FieldSpec field = FieldSpec.builder(String.class, getNameNoExtension(file))
+            String filePathValue = "";
+            if (filePathIsAbsolute) {
+                filePathValue = file.getAbsolutePath();
+            } else {
+                filePathValue = file.toString();
+            }
+
+            FieldSpec field = FieldSpec.builder(String.class, StringUtil.capitalize(getNameNoExtension(file)))
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                    .initializer("$S", file.getAbsoluteFile())
+                    .initializer("$S", filePathValue)
                     .build();
 
             root.addField(field);
         }
     }
 
-    private static TypeSpec addInnerClass(TypeSpec.Builder parent , Folder folder) {
+    private TypeSpec addInnerClass(TypeSpec.Builder parent , Folder folder) {
         TypeSpec.Builder innerClass = TypeSpec.classBuilder(folder.asFile().getName())
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC);
 
@@ -109,7 +109,7 @@ public class ResourceIndexer {
     }
 
 
-    private static String getNameNoExtension(File file) {
+    private String getNameNoExtension(File file) {
         if (!file.isFile()) {
             throw new RuntimeException("Have to supply a file");
         }
