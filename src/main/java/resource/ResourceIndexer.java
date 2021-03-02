@@ -124,7 +124,7 @@ public class ResourceIndexer {
 
         String path =  folder.asFile().toString().replaceAll("\\\\", "/");
         MethodSpec method = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .setName("getPath")
                 .returns(String.class)
                 .addStatement(String.format("return " + "\"" + "%s" + "\"", path))
