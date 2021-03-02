@@ -83,7 +83,7 @@ public class ResourceIndexer {
                 filePathValue = file.toString();
             }
 
-            FieldSpec field = FieldSpec.builder(String.class, StringUtil.capitalize(getNameNoExtension(file)))
+            FieldSpec field = FieldSpec.builder(String.class, StringUtil.capitalize(getNameNoExtension(file).replaceAll("-", "_")))
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                     .initializer("$S", filePathValue)
                     .build();

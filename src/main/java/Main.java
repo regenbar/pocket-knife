@@ -14,10 +14,6 @@ public class Main {
                 .withSearchPath("src/main/resources/")
                 .build();
 
-        List<String> strings = FileRead.readLines(R.text.TextA);
-        for (String string : strings) {
-            System.out.println(string);
-        }
 
     }
 }

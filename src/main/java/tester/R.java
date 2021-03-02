@@ -8,7 +8,7 @@ public final class R {
   }
 
   public static final class text {
-    public static final String TextA = "src\\main\\resources\\text\\textA.txt";
+    public static final String Text_A = "src\\main\\resources\\text\\text-A.txt";
 
     public static final class text1 {
       public static final String TextB = "src\\main\\resources\\text\\text1\\textB.txt";
