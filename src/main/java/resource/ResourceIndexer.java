@@ -8,8 +8,10 @@ import string.StringUtil;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.Paths;
 import java.sql.Struct;
+import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.Modifier;
 
@@ -75,6 +77,7 @@ public class ResourceIndexer {
     }
 
     private void addInnerField(TypeSpec.Builder root, List<File> files) {
+        List<String> fieldNames = new ArrayList<>();
         for (File file : files) {
             String filePathValue = "";
             if (filePathIsAbsolute) {
@@ -83,13 +86,30 @@ public class ResourceIndexer {
                 filePathValue = file.toString();
             }
 
-            FieldSpec field = FieldSpec.builder(String.class, StringUtil.capitalize(getNameNoExtension(file).replaceAll("-", "_")))
+            // Append iteration number if file exists under that name
+            String fieldName = StringUtil.capitalize(getNameNoExtension(file).replaceAll("-", "_"));
+            if (fieldNames.contains(fieldName)) {
+                int iterator = 1;
+                String original = fieldName;
+                do {
+                    fieldName = original + "_" + iterator++;
+                } while (fieldNames.contains(fieldName));
+            }
+            fieldNames.add(fieldName);;
+
+            FieldSpec field = FieldSpec.builder(String.class, fieldName)
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                     .initializer("$S", filePathValue)
                     .build();
 
             root.addField(field);
+
         }
+
+
+
+
+
     }
 
     private TypeSpec addInnerClass(TypeSpec.Builder parent , Folder folder) {
@@ -101,6 +121,17 @@ public class ResourceIndexer {
         for (Folder innerFolder : folder.getFolders()) {
             addInnerClass(innerClass, innerFolder);
         }
+
+        String path =  folder.asFile().toString().replaceAll("\\\\", "/");
+        MethodSpec method = MethodSpec.constructorBuilder()
+                .addModifiers(Modifier.PUBLIC)
+                .setName("getPath")
+                .returns(String.class)
+                .addStatement(String.format("return " + "\"" + "%s" + "\"", path))
+                .build();
+
+
+        innerClass.addMethod(method);
 
         TypeSpec build = innerClass.build();
         parent.addType(build);
