@@ -6,11 +6,7 @@ import model.Folder;
 import string.StringUtil;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.nio.file.Paths;
-import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.Modifier;
@@ -87,7 +83,7 @@ public class ResourceIndexer {
             }
 
             // Append iteration number if file exists under that name
-            String fieldName = StringUtil.capitalize(getNameNoExtension(file).replaceAll("-", "_"));
+            String fieldName = StringUtil.capitalize(buildVariableName(getFileNameRemoveEntension(file)));
             if (fieldNames.contains(fieldName)) {
                 int iterator = 1;
                 String original = fieldName;
@@ -110,6 +106,15 @@ public class ResourceIndexer {
 
 
 
+    }
+
+    private String buildVariableName(String string) {
+        String regex = "[^0-9a-zA-Z_$\\.]";
+        if (Character.isDigit(string.charAt(0))) {
+            string = "_" + string;
+        }
+        String cleanVariableName = string.replaceAll(regex, "_");
+        return cleanVariableName;
     }
 
     private TypeSpec addInnerClass(TypeSpec.Builder parent , Folder folder) {
@@ -140,7 +145,7 @@ public class ResourceIndexer {
     }
 
 
-    private String getNameNoExtension(File file) {
+    private String getFileNameRemoveEntension(File file) {
         if (!file.isFile()) {
             throw new RuntimeException("Have to supply a file");
         }
