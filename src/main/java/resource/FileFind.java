@@ -9,19 +9,19 @@ import java.util.List;
 
 public class FileFind extends FileFindBuilder<FileFind> {
     public List<File> findAll () throws FileNotFoundException {
-        return findAll();
+        return super.findAll();
     }
 
     public Folder findAndGroup() throws FileNotFoundException {
-        return findAndGroup();
+        return super.findAndGroup();
     }
 
 
     public Collection<File> findAll(File[] listFiles) {
-        return findAll(listFiles);
+        return super.findAll(listFiles);
     }
 
     public Folder findAndGroup(Folder folder, File[] listFiles) {
-        return findAndGroup(folder, listFiles);
+        return super.findAndGroup(folder, listFiles);
     }
 }

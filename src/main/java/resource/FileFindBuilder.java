@@ -11,6 +11,7 @@ import java.util.List;
 abstract class FileFindBuilder<T extends FileFindBuilder<T>>  {
     protected String searchPath = ".";
     protected boolean isSearchRecursive = true;
+    protected boolean includeFoldersIntoList = false;
 
     protected List<String> withFileNames = new ArrayList<>();
     protected List<String> withFileNameContains = new ArrayList<>();
@@ -21,6 +22,11 @@ abstract class FileFindBuilder<T extends FileFindBuilder<T>>  {
     protected List<String> withFilePathContains = new ArrayList<>();
     protected List<String> withoutFilePath = new ArrayList<>();
     protected List<String> withoutFilePathContains = new ArrayList<>();
+
+    public T withIncludeFolders() {
+        this.includeFoldersIntoList = true;
+        return (T)this;
+    }
 
     public T withSearchPath(String startPath) {
         this.searchPath = startPath;
@@ -146,6 +152,9 @@ abstract class FileFindBuilder<T extends FileFindBuilder<T>>  {
         }
         if (file.isDirectory()) {
             if (ifAddFolder(file)) {
+                if (includeFoldersIntoList) {
+                    allFiles.add(file);
+                }
                 allFiles.addAll(findAll(file.listFiles()));
             }
         } else {
@@ -187,6 +196,9 @@ abstract class FileFindBuilder<T extends FileFindBuilder<T>>  {
 
         for (File file : listFiles) {
             if (file.isDirectory()) {
+                if (includeFoldersIntoList) {
+                    allFiles.add(file);
+                }
                 if (isSearchRecursive) {
                     allFiles.addAll(findAll(file.listFiles()));
                 }

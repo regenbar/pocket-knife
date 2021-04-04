@@ -5,8 +5,10 @@ import model.Folder;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import javax.lang.model.element.Modifier;
 
 public class ResourceIndexer extends FileFindBuilder<ResourceIndexer> {
@@ -17,6 +19,12 @@ public class ResourceIndexer extends FileFindBuilder<ResourceIndexer> {
     private String classPackage;
     private String sourceFolderPath = "src/main/java";
 
+    /**
+     * Specify package path for a class
+     *
+     * @param classPackage Example: tester.test.service
+     * @return
+     */
     public ResourceIndexer withClassPackage (String classPackage) {
         this.classPackage = classPackage;
         return this;
