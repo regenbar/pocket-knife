@@ -19,3 +19,18 @@ sss
         <version>master</version>
     </dependency>
 </dependencies>
+
+## Using ResourceIndexer
+Creates a hierarchy of static classes and static field which represent folder structure.
+Traverse through class structure as you would through folder structure to get the path of a file.
+```
+new ResourceIndexer()
+        .withClassName("R")
+        .withClassPackage("tester.test")
+        .withSearchPath("src/main/resources/")
+        .withFileNameContains(".txt")
+        .withIncludeFolders()
+        .withGetFilesMethod()
+        .build();
+```
+      

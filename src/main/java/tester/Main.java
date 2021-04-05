@@ -3,6 +3,7 @@ package tester;
 import resource.ResourceIndexer;
 
 import java.io.IOException;
+import java.util.List;
 
 class Main {
     public static void main(String[] args) throws IOException {
@@ -12,17 +13,18 @@ class Main {
 //        for (File file : all) {
 //            System.out.println(file);
 //        }
-//
-//        System.out.println(all.size());
 
         new ResourceIndexer()
                 .withClassName("R")
-                .withClassPackage("tester")
+                .withClassPackage("tester.test")
                 .withSearchPath("src/main/resources/")
+                .withFileNameContains(".txt")
                 .withIncludeFolders()
+                .withGetFilesMethod()
                 .build();
 
-
+        List<String> files = R.images.getFiles();
+        System.out.println(files);
 
 //        FileWrite.append("test.txt", "Some text");
 //        FileWrite.append("test.txt", "Some Additional text");
