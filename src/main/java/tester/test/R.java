@@ -1,4 +1,4 @@
-package tester;
+package tester.test;
 
 import static java.util.Arrays.asList;
 
@@ -10,8 +10,10 @@ import java.util.List;
  * Dont modify it manually cause it will we overwritten next time its generated.
  */
 public final class R {
+  public static final String bojan = "\\bojan.txt";
+
   public static final class images {
-    public static final String regenbar = "src\\main\\resources\\images\\regenbar.jpg";
+    public static final String regenbar = "\\images\\regenbar.jpg";
 
     public static List<String> getFiles() {
       return asList(regenbar);
@@ -29,7 +31,7 @@ public final class R {
   }
 
   public static final class tester {
-    public static final String R = "src\\main\\resources\\tester\\R.java";
+    public static final String R = "\\tester\\R.java";
 
     public static List<String> getFiles() {
       return asList(R);
@@ -41,10 +43,12 @@ public final class R {
   }
 
   public static final class text {
-    public static final String _0_t_text_A = "src\\main\\resources\\text\\0+t text-A.txt";
+    public static final String _0_t_text_A = "\\text\\0+t text-A.txt";
+
+    public static final String bojan = "\\text\\bojan.txt";
 
     public static List<String> getFiles() {
-      return asList(_0_t_text_A);
+      return asList(_0_t_text_A,bojan);
     }
 
     public static String getPath() {
@@ -52,7 +56,7 @@ public final class R {
     }
 
     public static final class text1 {
-      public static final String textB = "src\\main\\resources\\text\\text1\\textB.txt";
+      public static final String textB = "\\text\\text1\\textB.txt";
 
       public static List<String> getFiles() {
         return asList(textB);
@@ -63,7 +67,7 @@ public final class R {
       }
 
       public static final class text3 {
-        public static final String textC = "src\\main\\resources\\text\\text1\\text3\\textC.txt";
+        public static final String textC = "\\text\\text1\\text3\\textC.txt";
 
         public static List<String> getFiles() {
           return asList(textC);
@@ -76,7 +80,7 @@ public final class R {
     }
 
     public static final class text2 {
-      public static final String textD = "src\\main\\resources\\text\\text2\\textD.txt";
+      public static final String textD = "\\text\\text2\\textD.txt";
 
       public static List<String> getFiles() {
         return asList(textD);

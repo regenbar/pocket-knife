@@ -12,6 +12,7 @@ abstract class FileFindBuilder<T extends FileFindBuilder<T>>  {
     protected String searchPath = ".";
     protected boolean isSearchRecursive = true;
     protected boolean includeFoldersIntoList = false;
+//    protected boolean withIgnoreRootPath;
 
     protected List<String> withFileNames = new ArrayList<>();
     protected List<String> withFileNameContains = new ArrayList<>();
@@ -23,10 +24,12 @@ abstract class FileFindBuilder<T extends FileFindBuilder<T>>  {
     protected List<String> withoutFilePath = new ArrayList<>();
     protected List<String> withoutFilePathContains = new ArrayList<>();
 
-    public T withIncludeFolders() {
-        this.includeFoldersIntoList = true;
-        return (T)this;
-    }
+
+
+//    public T withIgnoreRootPath() {
+//        this.withIgnoreRootPath = true;
+//        return (T)this;
+//    }
 
     public T withSearchPath(String startPath) {
         this.searchPath = startPath;
@@ -130,6 +133,7 @@ abstract class FileFindBuilder<T extends FileFindBuilder<T>>  {
     }
 
 
+
     private <T> boolean ifCollectionElementContains(T filePath, Collection<T> filePathConditions) {
         for (T filePathFragment : filePathConditions) {
             if (filePath.toString().contains(filePathFragment.toString())) {
@@ -229,4 +233,6 @@ abstract class FileFindBuilder<T extends FileFindBuilder<T>>  {
 
         return folder;
     }
+
+
 }

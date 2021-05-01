@@ -1,12 +1,37 @@
 package string;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class StringUtil {
 
     public static String capitalize (String str) {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
+    public static String inputStreamToString (InputStream inputStream) {
+        String text = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines().collect(Collectors.joining());
+        return text;
+    }
+
+    public static List<String> inputStreamToLines (InputStream inputStream) {
+        return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines().collect(Collectors.toList());
+    }
+
+    public static String bytesToString (byte[] bytes) {
+        InputStream inputStream = new ByteArrayInputStream(bytes);
+        return inputStreamToString(inputStream);
+    }
+
+    public static List<String> bytesToList (byte[] bytes) {
+        InputStream inputStream = new ByteArrayInputStream(bytes);
+        return inputStreamToLines(inputStream);
     }
 
     /**

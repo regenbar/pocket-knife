@@ -17,6 +17,15 @@ public class ResourceIndexer extends FileFindBuilder<ResourceIndexer> {
     private String classPackage;
     private String sourceFolderPath = "src/main/java";
     private boolean withIncludeGetFilesMethod;
+    public boolean withIgnoreRootPath = false;
+    public ResourceIndexer withIncludeFolders() {
+        this.includeFoldersIntoList = true;
+        return this;
+    }
+    public ResourceIndexer withIgnoreRootPath() {
+        this.withIgnoreRootPath = true;
+        return this;
+    }
 
     /**
      * Specify package path for a class
@@ -94,9 +103,21 @@ public class ResourceIndexer extends FileFindBuilder<ResourceIndexer> {
         for (File file : files) {
             String filePathValue = "";
             if (filePathIsAbsolute) {
-                filePathValue = file.getAbsolutePath();
+                String filePath = file.getAbsolutePath();
+                if (withIgnoreRootPath) {
+                    filePath = filePath.substring(new File(searchPath).getAbsolutePath().length() + 1);
+                }
+                filePathValue = filePath;
             } else {
-                filePathValue = file.toString();
+                String filePath = file.toString();
+                if (withIgnoreRootPath) {
+                    String removeSearchPath = searchPath;
+                    removeSearchPath = removeSearchPath.replaceAll("//", "\\");
+                    removeSearchPath = removeSearchPath.replaceAll("/", "\\\\");
+                    filePath = filePath.replace(removeSearchPath, "");
+                }
+
+                filePathValue = filePath;
             }
 
             // Append iteration number if file exists under that name
