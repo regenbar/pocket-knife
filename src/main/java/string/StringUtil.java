@@ -34,6 +34,29 @@ public class StringUtil {
         return inputStreamToLines(inputStream);
     }
 
+    public static boolean isNumeric(String strNum) {
+        return strNum.matches("-?\\d+(\\.\\d+)?");
+    }
+
+    public static String padRight(String str, int padCount, String c) {
+        String paddedStr = "";
+        for (int i = 0; i < padCount; i++) {
+            paddedStr += c;
+        }
+        paddedStr += str;
+        return paddedStr;
+    }
+
+    public static String padLeft(String str, int padCount, String c) {
+        String paddedStr = "";
+        String padded = "";
+        for (int i = 0; i < padCount; i++) {
+            padded += c;
+        }
+        paddedStr = str + padded;
+        return paddedStr;
+    }
+
     /**
      * Split string based on delimiters.
      *

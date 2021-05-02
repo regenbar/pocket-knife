@@ -112,9 +112,11 @@ public class ResourceIndexer extends FileFindBuilder<ResourceIndexer> {
                 String filePath = file.toString();
                 if (withIgnoreRootPath) {
                     String removeSearchPath = searchPath;
-                    removeSearchPath = removeSearchPath.replaceAll("//", "\\");
-                    removeSearchPath = removeSearchPath.replaceAll("/", "\\\\");
-                    filePath = filePath.replace(removeSearchPath, "");
+                    removeSearchPath = removeSearchPath.replaceAll("\\\\", "/");
+
+                    filePath = filePath.replaceAll("\\\\", "/");
+
+                    filePath = filePath.substring(removeSearchPath.length());
                 }
 
                 filePathValue = filePath;
